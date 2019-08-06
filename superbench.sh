@@ -10,11 +10,11 @@
 #
 
 # Colors
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[0;33m'
-SKYBLUE='\033[0;36m'
-PLAIN='\033[0m'
+RED=''
+GREEN=''
+YELLOW=''
+SKYBLUE=''
+PLAIN=''
 
 about() {
 	echo ""
@@ -44,6 +44,7 @@ cancel() {
 trap cancel SIGINT
 
 benchinit() {
+	rm /tmp/idcmoe.log
 	touch /tmp/idcmoe.log
 	# check release
 	if [ -f /etc/redhat-release ]; then
@@ -702,22 +703,20 @@ bench_all(){
 	benchinit;
 	clear
 	next;
-	echo "@intro" >> /tmp/idcmoe.log
 	print_intro;
 	next;
 	get_system_info;
-	echo "@system_info" >> /tmp/idcmoe.log
 	print_system_info;
-	echo "@ip_info" >> /tmp/idcmoe.log
+	echo "--!@!@!@--" >> /tmp/idcmoe.log
 	ip_info4;
 	next;
-	echo "@io_info" >> /tmp/idcmoe.log
+	echo "--!@!@!@--" >> /tmp/idcmoe.log
 	print_io;
 	next;
-	echo "@speedtest" >> /tmp/idcmoe.log
+	echo "--!@!@!@--" >> /tmp/idcmoe.log
 	print_speedtest;
 	next;
-	echo "@end_time" >> /tmp/idcmoe.log
+	echo "--!@!@!@--" >> /tmp/idcmoe.log
 	print_end_time;
 	next;
 	cleanup;
