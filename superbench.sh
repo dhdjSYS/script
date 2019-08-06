@@ -19,15 +19,15 @@ PLAIN='\033[0m'
 about() {
 	echo ""
 	echo " ========================================================= "
-	echo " \                 Superbench.sh  Script                 / "
+	echo " \      Superbench.sh  Script for IDCMOE auto review     / "
 	echo " \       Basic system info, I/O test and speedtest       / "
-	echo " \                   v1.1.5 (14 Jun 2019)                / "
-	echo " \                   Created by Oldking                  / "
+	echo " \                   v1-1.1.5 (6 Aug 2019)               / "
+	echo " \           Created by Oldking Modified by dhdj         / "
 	echo " ========================================================= "
 	echo ""
-	echo " Intro: https://www.oldking.net/350.html"
-	echo " Copyright (C) 2019 Oldking oooldking@gmail.com"
-	echo -e " ${RED}Happy New Year!${PLAIN}"
+	echo " Intro: https://www.idc.moe/"
+	echo " Copyright (C) 2019 dhdj dhdjwjy@gmail.com"
+	echo -e " ${RED}Happy dhdj Year!${PLAIN}"
 	echo ""
 }
 
@@ -44,6 +44,7 @@ cancel() {
 trap cancel SIGINT
 
 benchinit() {
+	touch /tmp/idcmoe.log
 	# check release
 	if [ -f /etc/redhat-release ]; then
 	    release="centos"
@@ -202,6 +203,7 @@ speed_test(){
 	        temp=$(echo "${REDownload}" | awk -F ' ' '{print $1}')
 	        if [[ $(awk -v num1=${temp} -v num2=0 'BEGIN{print(num1>num2)?"1":"0"}') -eq 1 ]]; then
 	        	printf "${YELLOW}%-17s${GREEN}%-18s${RED}%-20s${SKYBLUE}%-12s${PLAIN}\n" " ${nodeName}" "${reupload}" "${REDownload}" "${relatency}" | tee -a $log
+			echo $nodeName.$reupload.$REDownload.$relatency >> /tmp/idcmoe.log
 	        fi
 		else
 	        local cerror="ERROR"
@@ -223,6 +225,7 @@ speed_test(){
 	        temp=$(echo "${REDownload}" | awk -F ' ' '{print $1}')
 	        if [[ $(awk -v num1=${temp} -v num2=0 'BEGIN{print(num1>num2)?"1":"0"}') -eq 1 ]]; then
 	        	printf "${YELLOW}%-17s${GREEN}%-18s${RED}%-20s${SKYBLUE}%-12s${PLAIN}\n" " ${nodeName}" "${reupload}" "${REDownload}" "${relatency}" | tee -a $log
+			echo $nodeName.$reupload.$REDownload.$relatency >> /tmp/idcmoe.log
 			fi
 		else
 	        local cerror="ERROR"
@@ -395,6 +398,11 @@ ip_info4(){
 		city=${region}
 	fi
 
+	echo $asn, $isp >> /tmp/idcmoe.log
+	echo $org >> /tmp/idcmoe.log
+	echo $city, $country / $countryCode >> /tmp/idcmoe.log
+	echo $region >> /tmp/idcmoe.log
+	
 	echo -e " ASN & ISP            : ${SKYBLUE}$asn, $isp${PLAIN}" | tee -a $log
 	echo -e " Organization         : ${YELLOW}$org${PLAIN}" | tee -a $log
 	echo -e " Location             : ${SKYBLUE}$city, ${YELLOW}$country / $countryCode${PLAIN}" | tee -a $log
@@ -501,14 +509,18 @@ print_io() {
 	fi
 
 	if [[ $writemb != "1" ]]; then
+		echo $writemb_size >> /tmp/idcmoe.log
 		echo -n " I/O Speed( $writemb_size )   : " | tee -a $log
 		io1=$( io_test $writemb )
+		echo $io1 >> /tmp/idcmoe.log
 		echo -e "${YELLOW}$io1${PLAIN}" | tee -a $log
 		echo -n " I/O Speed( $writemb_size )   : " | tee -a $log
 		io2=$( io_test $writemb )
+		echo $io2 >> /tmp/idcmoe.log
 		echo -e "${YELLOW}$io2${PLAIN}" | tee -a $log
 		echo -n " I/O Speed( $writemb_size )   : " | tee -a $log
 		io3=$( io_test $writemb )
+		echo $io3 >> /tmp/idcmoe.log
 		echo -e "${YELLOW}$io3${PLAIN}" | tee -a $log
 		ioraw1=$( echo $io1 | awk 'NR==1 {print $1}' )
 		[ "`echo $io1 | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw1=$( awk 'BEGIN{print '$ioraw1' * 1024}' )
@@ -518,13 +530,30 @@ print_io() {
 		[ "`echo $io3 | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw3=$( awk 'BEGIN{print '$ioraw3' * 1024}' )
 		ioall=$( awk 'BEGIN{print '$ioraw1' + '$ioraw2' + '$ioraw3'}' )
 		ioavg=$( awk 'BEGIN{printf "%.1f", '$ioall' / 3}' )
+		echo $ioavg MB/s >> /tmp/idcmoe.log
 		echo -e " Average I/O Speed    : ${YELLOW}$ioavg MB/s${PLAIN}" | tee -a $log
 	else
+		echo 0 >> /tmp/idcmoe.log
+		echo 0 >> /tmp/idcmoe.log
+		echo 0 >> /tmp/idcmoe.log
+		echo 0 >> /tmp/idcmoe.log
+		echo 0 >> /tmp/idcmoe.log
 		echo -e " ${RED}Not enough space!${PLAIN}"
 	fi
 }
 
 print_system_info() {
+	echo $cname >> /tmp/idcmoe.log
+	echo $cores >> /tmp/idcmoe.log
+	echo $corescache >> /tmp/idcmoe.log
+	echo $opsy >> /tmp/idcmoe.log
+	echo $kern >> /tmp/idcmoe.log
+	echo $disk_used_size >> /tmp/idcmoe.log
+	echo $uram >> /tmp/idcmoe.log
+	echo $uswap >> /tmp/idcmoe.log
+	echo $up >> /tmp/idcmoe.log
+	echo $load >> /tmp/idcmoe.log
+	echo $tcpctrl >> /tmp/idcmoe.log
 	echo -e " CPU Model            : ${SKYBLUE}$cname${PLAIN}" | tee -a $log
 	echo -e " CPU Cores            : ${YELLOW}$cores Cores ${SKYBLUE}@ $freq MHz $arch${PLAIN}" | tee -a $log
 	echo -e " CPU Cache            : ${SKYBLUE}$corescache ${PLAIN}" | tee -a $log
@@ -560,6 +589,7 @@ print_end_time() {
 		bj_time=$(date -u +%Y-%m-%d" "%H:%M:%S -d '+8 hours')
 	fi
 	echo " Timestamp    : $bj_time GMT+8" | tee -a $log
+	echo $bj_time >> /tmp/idcmoe.log
 	#echo " Finished!"
 	echo " Results      : $log"
 }
@@ -597,9 +627,9 @@ get_system_info() {
 }
 
 print_intro() {
-	printf ' Superbench.sh -- https://www.oldking.net/350.html\n' | tee -a $log
-	printf " Mode  : \e${GREEN}%s\e${PLAIN}    Version : \e${GREEN}%s${PLAIN}\n" $mode_name 1.1.5 | tee -a $log
-	printf ' Usage : wget -qO- git.io/superbench.sh | bash\n' | tee -a $log
+	printf ' Superbench.sh -- https://www.idc.moe/\n' | tee -a $log
+	printf " Mode  : \e${GREEN}%s\e${PLAIN}    Version : \e${GREEN}%s${PLAIN}\n" $mode_name 1-1.1.5 | tee -a $log
+	printf ' Usage : DISABLE BY DHDJ: PLEASE ACCESS WWW.IDC.MOE FOR AUTO REVIEW!\n' | tee -a $log
 }
 
 sharetest() {
@@ -665,16 +695,22 @@ bench_all(){
 	benchinit;
 	clear
 	next;
+	echo "@intro" >> /tmp/idcmoe.log
 	print_intro;
 	next;
 	get_system_info;
+	echo "@system_info" >> /tmp/idcmoe.log
 	print_system_info;
+	echo "@ip_info" >> /tmp/idcmoe.log
 	ip_info4;
 	next;
+	echo "@io_info" >> /tmp/idcmoe.log
 	print_io;
 	next;
+	echo "@speedtest" >> /tmp/idcmoe.log
 	print_speedtest;
 	next;
+	echo "@end_time" >> /tmp/idcmoe.log
 	print_end_time;
 	next;
 	cleanup;
