@@ -636,7 +636,7 @@ get_system_info() {
 print_intro() {
 	printf ' Superbench.sh -- https://www.idc.moe/\n' | tee -a $log
 	printf " Mode  : \e${GREEN}%s\e${PLAIN}    Version : \e${GREEN}%s${PLAIN}\n" $mode_name 1-1.1.5 | tee -a $log
-	printf ' Usage : DISABLE BY DHDJ: PLEASE ACCESS WWW.IDC.MOE FOR AUTO REVIEW!\n' | tee -a $log
+	printf ' Usage : DISABLED BY DHDJ: PLEASE ACCESS WWW.IDC.MOE FOR AUTO REVIEW!\n' | tee -a $log
 }
 
 sharetest() {
