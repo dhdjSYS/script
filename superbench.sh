@@ -545,12 +545,19 @@ print_io() {
 print_system_info() {
 	echo $cname >> /tmp/idcmoe.log
 	echo $cores >> /tmp/idcmoe.log
+	echo $freq >> /tmp/idcmoe.log
+	echo $arch >> /tmp/idcmoe.log
 	echo $corescache >> /tmp/idcmoe.log
 	echo $opsy >> /tmp/idcmoe.log
+	echo $virtual >> /tmp/idcmoe.log
 	echo $kern >> /tmp/idcmoe.log
 	echo $disk_used_size >> /tmp/idcmoe.log
+	echo $disk_total_size >> /tmp/idcmoe.log
 	echo $uram >> /tmp/idcmoe.log
+	echo $tram >> /tmp/idcmoe.log
+	echo $bram >> /tmp/idcmoe.log
 	echo $uswap >> /tmp/idcmoe.log
+	echo $swap >> /tmp/idcmoe.log
 	echo $up >> /tmp/idcmoe.log
 	echo $load >> /tmp/idcmoe.log
 	echo $tcpctrl >> /tmp/idcmoe.log
